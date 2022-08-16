@@ -156,7 +156,7 @@ jobs:
       # Checkout code from git
       # Restore from cache
       # Your job code here
-      - checkout
+        - checkout
         # Restore from cache
         # Your job code here
         - restore_cache:
