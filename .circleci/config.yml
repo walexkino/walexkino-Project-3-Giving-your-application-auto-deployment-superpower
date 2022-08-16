@@ -126,21 +126,53 @@ jobs:
 
       
             
-#   scan-frontend:
-#     docker:
-#       # Docker image here
-#     steps:
-#       # Checkout code from git
-#       # Restore from cache
-#       # Your job code here
+  scan-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+        # Restore from cache
+        # Your job code here
+        - restore_cache:
+            keys: [scanfrontend]
+        - run:
+            name: scan-frontend
+            command: |
+              # Your code here
+              cd frontend
+              npm install
+              # npm install oauth-sign@^0.9.0
+              npm audit --audit-level=critical
+              #exit 1
+        - save_cache:
+            paths: [frontend/node_modules]
+            key: scanfrontend
+        
 
-#   scan-backend:
-#     docker:
-#       # Docker image here
-#     steps:
-#       # Checkout code from git
-#       # Restore from cache
-#       # Your job code here
+  scan-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      # Checkout code from git
+      # Restore from cache
+      # Your job code here
+      - checkout
+        # Restore from cache
+        # Your job code here
+        - restore_cache:
+            keys: [scanbackend]
+        - run:
+            name: scan-backend
+            command: |
+              # Your code here
+              cd backend
+              npm install
+              # npm install oauth-sign@^0.9.0
+              npm audit --audit-level=critical
+              #exit 1
+        - save_cache:
+            paths: [backend/node_modules]
+            key: scanbackend
 
 #   deploy-infrastructure:
 #     docker:
@@ -317,10 +349,10 @@ workflows:
           requires: [build-frontend]
       - test-backend:
           requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
       # - deploy-infrastructure:
       #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       #     filters:
