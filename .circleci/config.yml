@@ -32,14 +32,13 @@ commands:
             unzip awscliv2.zip
             sudo ./aws/install
 
-
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
       # Add parameter here  
       workflow_id:
-        Default: "${CIRCLE_WORKFLOW_ID:0:7}"
-        Type: String
+        default: "${CIRCLE_WORKFLOW_ID:0:7}"
+        type: string
 
         
     steps:
@@ -47,7 +46,6 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            # Your code here
             aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
             aws cloudformation delete-stack --stack-name "udapeople-backend-<<parameters.workflow_id>>"
             aws cloudformation delete-stack --stack-name "udapeople-frontend-<<parameters.workflow_id>>"
@@ -58,8 +56,8 @@ commands:
     parameters:
       # Add parameter here   
       workflow_id:
-        Default: "${CIRCLE_WORKFLOW_ID:0:7}"
-        Type: String
+        default: "${CIRCLE_WORKFLOW_ID:0:7}"
+        type: string
 
     steps:
       - run:
@@ -92,7 +90,7 @@ jobs:
             cd frontend
             npm install
             npm run build
-            # exit 1
+            
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
@@ -111,7 +109,7 @@ jobs:
             cd backend
             npm install
             npm run build
-            #exit 1
+            
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
@@ -297,15 +295,9 @@ jobs:
 
       - install_ansible
 
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       # Your code here
-      #       exit 1
       - run:
           name: Configure server
           command: |
-            # Your code here
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
@@ -328,7 +320,7 @@ jobs:
       - run: 
           name: sending the migration results to kvdb
           command: |
-            if grep -q "has been successfully executed. " ~/project/backend/migrations_dump.txt
+            if grep -q "has been successfully executed." ~/project/backend/migrations_dump.txt
             then
               curl --insecure https://kvdb.io/XuJjiLDYQ4EMpGb12cKEDQ/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
@@ -356,10 +348,7 @@ jobs:
       - install_awscli
       - install_ansible
 
-      # - run:
-      #     name: Install dependencies
-      #     command: |
-      #       # your code here
+    
       - run:
           name: Get backend url
           command: |
@@ -387,7 +376,7 @@ jobs:
       - revert-migrations
 
   deploy-backend:
-    docker:
+    docker: 
       # Docker image here that supports Ansible
       - image: cimg/base:stable
     steps:
@@ -398,23 +387,26 @@ jobs:
       
       - attach_workspace:
           at: ~/
+
       - install_nodejs
       - install_awscli
       - install_ansible
-
       - run:
           name: Deploy backend
           command: |
             cd backend
+
             npm i
             npm run build
             cd ..
+
             cd .circleci/ansible
             mkdir files
             cd files
             tar -C ../../../backend -czvf artifact.tar.gz .
             cd ../
-            echo "contents of the inventory.txt files is ........."
+
+            echo "contents of the inventory.txt files is ----"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destory-environment
