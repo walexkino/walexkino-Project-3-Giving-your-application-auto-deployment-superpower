@@ -377,8 +377,6 @@ jobs:
       - run:
           name: Deploy frontend objects
           command: |
-            # your code here
-      # Here's where you will add some code to rollback on failure      
             cd frontend
             sudo npm install -g npm@latest
             rm -rf node_modeules
@@ -424,7 +422,7 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destory-environment
       - revert-migrations
-      
+
       # - run:
       #     name: Install dependencies
       #     command: |
