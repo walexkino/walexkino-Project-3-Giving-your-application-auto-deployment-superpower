@@ -9,6 +9,9 @@ log.txt
 .vscode/
 npm-debug.log*
 
+#adding for pem files
+
+*.pem
 .idea/
 .ionic/
 .sourcemaps/
