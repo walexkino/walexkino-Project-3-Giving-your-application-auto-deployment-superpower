@@ -223,7 +223,7 @@ jobs:
             cat inventory.txt
             # export BACKEND_IP=$(aws ec2 describe-instances \
             # --query 'Reservations[*].instances[*].PublicIpAddress' \
-            # --filter Name=tage:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7} \
+            # --filter Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7} \
             # --output text       
             # )
             # echo ${BACKEND_IP}
