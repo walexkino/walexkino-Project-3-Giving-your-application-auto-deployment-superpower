@@ -65,7 +65,7 @@ commands:
           when: on_fail
           # Add when this will run
           command: |
-            SUCCESS = $(curl --insecure "https://kvdb.io/XuJjiLDYQ4EMpGb12cKEDQ/migration_<<parameters.workflow_id>>")
+            SUCCESS=$(curl --insecure "https://kvdb.io/XuJjiLDYQ4EMpGb12cKEDQ/migration_<<parameters.workflow_id>>")
             if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
@@ -461,8 +461,8 @@ jobs:
             else  
               exit 1
             fi
-      - destroy-environment
-      - revert-migrations
+      # - destroy-environment
+      # - revert-migrations
 
   cloudfront-update:
     docker:
