@@ -65,7 +65,6 @@ commands:
           when: on_fail
           # Add when this will run
           command: |
-            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
             SUCCESS = $(curl --insecure "https://kvdb.io/XuJjiLDYQ4EMpGb12cKEDQ/migration_<<parameters.workflow_id>>")
             if(( $SUCCESS==1 )); 
             then
@@ -434,11 +433,6 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            cd backend-app
-            npm install
-            npm install forever -g
-            #env PATH=$PATH:/usr/local/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu
-            cd ..
             BACKEND_PUBLIC_IP=$(aws ec2 describe-instances \
             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
