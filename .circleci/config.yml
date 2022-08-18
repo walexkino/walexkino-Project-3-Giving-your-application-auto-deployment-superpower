@@ -484,7 +484,7 @@ jobs:
           name: Update cloudfront distribution
           command: |
             aws cloudformation  deploy \
-            --template-false .circleci/files/cloudfront.yml \
+            --template-file .circleci/files/cloudfront.yml \
             --stack-name  InitialStack
       - destroy-environment
       - revert-migrations
