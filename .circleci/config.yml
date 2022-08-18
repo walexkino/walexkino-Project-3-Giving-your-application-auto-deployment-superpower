@@ -65,7 +65,7 @@ commands:
           when: on_fail
           # Add when this will run
           command: |
-            SUCCESS = $(curl --insecure "https://kvdb.io/GihzLn9tKaS8UmwtTTnRhb/migration_<<parameters.workflow_id>>")
+            SUCCESS = $(curl --insecure "https://kvdb.io/XuJjiLDYQ4EMpGb12cKEDQ/migration_<<parameters.workflow_id>>")
             if(( $SUCCESS==1 )); 
             then
               cd ~/project/backend
@@ -321,7 +321,7 @@ jobs:
           command: |
             if grep -q "has been successfully executed." ~/project/backend/migrations_dump.txt
             then
-              curl --insecure https://kvdb.io/GihzLn9tKaS8UmwtTTnRhb/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl --insecure https://kvdb.io/XuJjiLDYQ4EMpGb12cKEDQ/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - destroy-environment
       - revert-migrations
@@ -478,7 +478,7 @@ jobs:
             list-exports  --query "Exports[?Name==\`WorkflowID\`].Value" \
             --no-paginate --output test)
             echo "Old Workflow ID: $OLD_WORKFLOW_ID"
-            curl https://kvdb.io/GihzLn9tKaS8UmwtTTnRhb/old_workflow_id -d "S{OLD_WORKFLOW_ID}"
+            curl https://kvdb.io/XuJjiLDYQ4EMpGb12cKEDQ/old_workflow_id -d "S{OLD_WORKFLOW_ID}"
 
       - run:
           name: Update cloudfront distribution
@@ -506,13 +506,13 @@ jobs:
                 --query "StackSummaries[*].StackName" \
                 --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
             echo Stack names: "${STACKS[@]}"
-            export OldWorkflowID=$(curl --insecure https://kvdb.io/GihzLn9tKaS8UmwtTTnRhb/old_workflow_id)
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/XuJjiLDYQ4EMpGb12cKEDQ/old_workflow_id)
             echo Old Workflow ID: $OldWorkflowID
             
       - run:
           name: Remove old stacks and files
           command: |
-            export OldWorkflowID=$(curl --insecure https://kvdb.io/GihzLn9tKaS8UmwtTTnRhb/old_workflow_id)
+            export OldWorkflowID=$(curl --insecure https://kvdb.io/XuJjiLDYQ4EMpGb12cKEDQ/old_workflow_id)
             echo Old Workflow ID: $OldWorkflowID
 
             if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
@@ -554,5 +554,5 @@ workflows:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
           requires: [smoke-test]
-      # - cleanup:
-      #     requires: [cloudfront-update]
+      - cleanup:
+          requires: [cloudfront-update]
